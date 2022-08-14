@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollViewContent: {
-        flex: 1,
+        display: 'flex',
+        minHeight: '100%',
         alignItems: 'center',
     },
     listItem: {

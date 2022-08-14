@@ -5,10 +5,10 @@
  */
 import { FontAwesome } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import {NavigationContainer, DefaultTheme, DarkTheme, useIsFocused} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import {ColorSchemeName, Pressable, View, Text} from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -20,6 +20,8 @@ import TabThreeScreen from '../screens/TabThreeScreen'
 import TabFourScreen from '../screens/TabFourScreen'
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import {useEffect} from "react"
+import Animated, {useAnimatedStyle, useSharedValue, withRepeat, withSpring, withTiming} from "react-native-reanimated"
 
 export default function Navigation() {
   return (
@@ -65,9 +67,6 @@ function BottomTabNavigator() {
         tabBarActiveTintColor: '#248e61',
           tabBarStyle: {
             height: 80,
-          },
-          tabBarLabelStyle: {
-            marginBottom: 10
           }
       }}>
       <BottomTab.Screen
@@ -75,7 +74,8 @@ function BottomTabNavigator() {
         component={TabOneScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
           title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color , focused}) => <TabBarIcon name="code" color={color} focused={focused} />,
+            tabBarLabel: ({ color, focused }) => <Label name="Tab one" color={color} focused={focused} />,
           headerRight: () => (
             <Pressable
               onPress={() => navigation.navigate('Modal')}
@@ -96,24 +96,24 @@ function BottomTabNavigator() {
         name="TabTwo"
         component={TabTwoScreen}
         options={{
-          title: 'Camera test',
-          tabBarIcon: ({ color }) => <TabBarIcon name="camera" color={color} />,
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name="camera" color={color} focused={focused} />,
+            tabBarLabel: ({ color, focused }) => <Label name="Camera" color={color} focused={focused} />
         }}
       />
         <BottomTab.Screen
             name="TabThree"
             component={TabThreeScreen}
             options={{
-                title: 'Animation',
-                tabBarIcon: ({ color }) => <TabBarIcon name="circle" color={color} />
+                tabBarIcon: ({ color , focused}) => <TabBarIcon name="circle" color={color} focused={focused} />,
+                tabBarLabel: ({ color, focused }) => <Label name="Animation" color={color} focused={focused} />
             }}
             />
         <BottomTab.Screen
             name="TabFour"
             component={TabFourScreen}
             options={{
-                title: 'List',
-                tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />
+                tabBarIcon: ({ color , focused}) => <TabBarIcon name="list" color={color} focused={focused} />,
+                tabBarLabel: ({ color, focused }) => <Label name="List" color={color} focused={focused} />
             }}
         />
     </BottomTab.Navigator>
@@ -123,9 +123,38 @@ function BottomTabNavigator() {
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
+
+type TabBarProps = {
+    name: React.ComponentProps<typeof FontAwesome>['name']
+    color: string
+    focused?: boolean
+}
+
+const Label = ({ name, focused, color }: TabBarProps) => {
+    return <Text style={[focused && { fontWeight: 'bold' }, { color, marginBottom: 14, fontSize: 12 }]}>{name}</Text>
+}
+
+const TabBarIcon = ({ name, color, focused }: TabBarProps) => {
+    const rotation = useSharedValue(0)
+    const scale = useSharedValue(1)
+    const isFocused = useIsFocused()
+
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ rotate: `${rotation.value}deg` }, { scale: scale.value }],
+        };
+    })
+
+    useEffect(() => {
+        if (!isFocused || !focused) return
+        // rotation.value = withRepeat(withTiming(10, { duration: 200 }), 4, true)
+        scale.value = withRepeat(withSpring(1.1), 2, true)
+        // rotation.value = withSpring(0)
+    }, [isFocused, focused])
+
+  return (
+      <Animated.View style={animatedStyle}>
+        <FontAwesome size={30} style={{ marginBottom: -3, marginTop: 10 }} name={name} color={color} />
+      </Animated.View>
+  )
 }
