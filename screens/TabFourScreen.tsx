@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 
 const TabFourScreen = () => {
     const [items, setItems] = useState<ListItem[]>(new Array(5).fill(0).map((_, i) => ({ id: i })))
-
+    const scrollY = useRef(new Animated.Value(0)).current
     const initialRenderRef = useRef(true)
 
     useEffect(() => {
@@ -74,14 +74,25 @@ const TabFourScreen = () => {
             <TouchableOpacity onPress={addItem} style={styles.floatingButton}>
                 <Text style={{color: 'white', fontSize: 33 }}>+</Text>
             </TouchableOpacity>
-            <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
-                {items.map((item, i) => (
-                    <Animated.View entering={initialRenderRef.current ? FadeIn.delay(100 * i) : FadeIn} exiting={FadeOut} onTouchEnd={() => deleteItem(item.id)}
-                                   style={styles.listItem} key={item.id} layout={Layout.delay(100)}>
-                        <Text style={{color: 'white', fontSize: 20 }}>{item.id}</Text>
-                    </Animated.View>
-                ))}
-            </ScrollView>
+            <Animated.ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} scrollEventThrottle={16}
+                                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY }}}],
+                                     { useNativeDriver: true })}>
+                {items.map((item, i) => {
+                    const size = 100
+                    const inputRange = [-1, 0, size * i, size * (i + 2)]
+                    const opacityInputRange = [-1, 0, size * i, size * (i + 0.8)]
+                    const scale = scrollY.interpolate({ inputRange, outputRange: [1, 1, 1, 0] })
+                    const opacity = scrollY.interpolate({ inputRange: opacityInputRange, outputRange: [1, 1, 1, 0] })
+
+                    return (
+                        <Animated.View entering={initialRenderRef.current ? FadeIn.delay(100 * i) : FadeIn}
+                                       exiting={FadeOut} onTouchEnd={() => deleteItem(item.id)}
+                                       style={[styles.listItem, { transform: [{scale}], opacity }]} key={item.id} layout={Layout.delay(100)}>
+                            <Text style={{color: 'white', fontSize: 20}}>{item.id}</Text>
+                        </Animated.View>
+                    )
+                })}
+            </Animated.ScrollView>
         </View>
     )
 }
