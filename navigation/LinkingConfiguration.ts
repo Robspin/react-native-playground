@@ -4,12 +4,11 @@
  * https://reactnavigation.org/docs/configuring-links
  */
 
-import { LinkingOptions } from '@react-navigation/native';
-import * as Linking from 'expo-linking';
+import { LinkingOptions } from '@react-navigation/native'
+import * as Linking from 'expo-linking'
 
-import { RootStackParamList } from '../types';
 
-const linking: LinkingOptions<RootStackParamList> = {
+const linking: LinkingOptions<any> = {
   prefixes: [Linking.makeUrl('/')],
   config: {
     screens: {
@@ -25,6 +24,16 @@ const linking: LinkingOptions<RootStackParamList> = {
               TabTwoScreen: 'two',
             },
           },
+          TabThree: {
+            screens: {
+              TabThreeScreen: 'three',
+            },
+          },
+          TabFour: {
+            screens: {
+              TabFourScreen: 'four',
+            }
+          }
         },
       },
       Modal: 'modal',
