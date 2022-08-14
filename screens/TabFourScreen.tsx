@@ -5,9 +5,9 @@ import Animated, {
     withTiming,
     withSpring,
     withRepeat,
-    FadeIn
+    FadeIn, FadeOut, Layout
 } from "react-native-reanimated"
-import {useCallback, useEffect, useState} from "react"
+import {useCallback, useEffect, useRef, useState} from "react"
 
 interface ListItem {
     id: number
@@ -15,14 +15,14 @@ interface ListItem {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 1
     },
     scrollView: {
         flex: 1,
     },
     scrollViewContent: {
+        flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
     },
     listItem: {
         height: 80,
@@ -32,13 +32,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        // shadow android
-        // shadow ios
-        elevation: 5,
-        shadowOpacity: 1,
-        shadowColor: 'white',
-        shadowOffset: { width: 0, height: 10 },
-        shadowRadius: 20
     },
     floatingButton: {
         width: 50,
@@ -56,7 +49,13 @@ const styles = StyleSheet.create({
 })
 
 const TabFourScreen = () => {
-    const [items, setItems] = useState<ListItem[]>(new Array(0).fill(0).map((_, i) => ({ id: i })))
+    const [items, setItems] = useState<ListItem[]>(new Array(5).fill(0).map((_, i) => ({ id: i })))
+
+    const initialRenderRef = useRef(true)
+
+    useEffect(() => {
+        initialRenderRef.current = false
+    }, [])
 
     const addItem = useCallback(() => {
         setItems((currentItems) => {
@@ -65,14 +64,19 @@ const TabFourScreen = () => {
         })
     }, [])
 
+    const deleteItem = useCallback((itemId: number) => {
+        setItems((currentItems) => [...currentItems.filter(item => item.id !== itemId)])
+    }, [])
+
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={addItem} style={styles.floatingButton}>
                 <Text style={{color: 'white', fontSize: 33 }}>+</Text>
             </TouchableOpacity>
             <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
-                {items.map((item) => (
-                    <Animated.View entering={FadeIn} style={styles.listItem} key={item.id}>
+                {items.map((item, i) => (
+                    <Animated.View entering={initialRenderRef.current ? FadeIn.delay(100 * i) : FadeIn} exiting={FadeOut} onTouchEnd={() => deleteItem(item.id)}
+                                   style={styles.listItem} key={item.id} layout={Layout.delay(100)}>
                         <Text style={{color: 'white', fontSize: 20 }}>{item.id}</Text>
                     </Animated.View>
                 ))}
