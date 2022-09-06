@@ -83,11 +83,12 @@ const TabFourScreen = () => {
                     const opacityInputRange = [-1, 0, size * i, size * (i + 0.8)]
                     const scale = scrollY.interpolate({ inputRange, outputRange: [1, 1, 1, 0] })
                     const opacity = scrollY.interpolate({ inputRange: opacityInputRange, outputRange: [1, 1, 1, 0] })
+                    const topFadeStyles = { transform: [{scale}], opacity }
 
                     return (
-                        <Animated.View entering={initialRenderRef.current ? FadeIn.delay(100 * i) : FadeIn}
+                        <Animated.View
                                        exiting={FadeOut} onTouchEnd={() => deleteItem(item.id)}
-                                       style={[styles.listItem, { transform: [{scale}], opacity }]} key={item.id} layout={Layout.delay(100)}>
+                                       style={[styles.listItem, topFadeStyles]} key={item.id} layout={Layout.delay(100)}>
                             <Text style={{color: 'white', fontSize: 20}}>{item.id}</Text>
                         </Animated.View>
                     )
