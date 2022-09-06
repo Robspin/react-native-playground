@@ -73,9 +73,9 @@ function BottomTabNavigator() {
         name="TabOne"
         component={TabOneScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Tab One',
+          title: 'SQLite',
           tabBarIcon: ({ color , focused}) => <TabBarIcon name="code" color={color} focused={focused} />,
-            tabBarLabel: ({ color, focused }) => <Label name="Tab one" color={color} focused={focused} />,
+            tabBarLabel: ({ color, focused }) => <Label name="SQLite" color={color} focused={focused} />,
           headerRight: () => (
             <Pressable
               onPress={() => navigation.navigate('Modal')}
