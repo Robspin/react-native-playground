@@ -1,12 +1,5 @@
-import { View, StyleSheet, TouchableOpacity, ScrollView, Text } from "react-native"
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    withTiming,
-    withSpring,
-    withRepeat,
-    FadeIn, FadeOut, Layout
-} from "react-native-reanimated"
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native"
+import Animated, { FadeOut, Layout } from "react-native-reanimated"
 import {useCallback, useEffect, useRef, useState} from "react"
 
 interface ListItem {

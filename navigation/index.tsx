@@ -22,6 +22,7 @@ import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../typ
 import LinkingConfiguration from './LinkingConfiguration';
 import {useEffect} from "react"
 import Animated, {useAnimatedStyle, useSharedValue, withRepeat, withSpring, withTiming} from "react-native-reanimated"
+import TabFiveScreen from "../screens/TabFiveScreen"
 
 export default function Navigation() {
   return (
@@ -116,6 +117,14 @@ function BottomTabNavigator() {
                 tabBarLabel: ({ color, focused }) => <Label name="List" color={color} focused={focused} />
             }}
         />
+        {/*<BottomTab.Screen*/}
+        {/*    name="TabFive"*/}
+        {/*    component={TabFiveScreen}*/}
+        {/*    options={{*/}
+        {/*        tabBarIcon: ({ color , focused}) => <TabBarIcon name="list" color={color} focused={focused} />,*/}
+        {/*        tabBarLabel: ({ color, focused }) => <Label name="List" color={color} focused={focused} />*/}
+        {/*    }}*/}
+        {/*/>*/}
     </BottomTab.Navigator>
   );
 }

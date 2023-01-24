@@ -33,6 +33,11 @@ const linking: LinkingOptions<any> = {
             screens: {
               TabFourScreen: 'four',
             }
+          },
+          TabFive: {
+            screens: {
+              TabFourScreen: 'four',
+            }
           }
         },
       },
